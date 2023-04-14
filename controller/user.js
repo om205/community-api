@@ -50,7 +50,7 @@ exports.loginUser = async (req, res) => {
 // @desc    Get user details
 // @route   GET /v1/auth/me
 // @access  Private
-exports.getUser = async (req, res) => {
+exports.getUser = (req, res) => {
     const jsonRes = {
         status: true,
         content: {data: req.user}

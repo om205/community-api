@@ -16,10 +16,22 @@ const RoleSchema = new mongoose.Schema({
     timestamps: true
 })
 
+RoleSchema.virtual('users', {
+  ref: 'Member',
+  localField: '_id',
+  foreignField: 'role'
+})
+
 RoleSchema.method('toJSON', function() {
   const role = this
   const roleObject = role.toObject()
+  roleObject.created_at = roleObject.createdAt
+  roleObject.updated_at = roleObject.updatedAt
+  roleObject.id = roleObject._id
 
+  delete roleObject.createdAt
+  delete roleObject.updatedAt
+  delete roleObject._id
   delete roleObject.__v
 
   return roleObject

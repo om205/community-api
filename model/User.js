@@ -10,7 +10,6 @@ const UserSchema = new mongoose.Schema({
           type: String,
           default: '',
           minLength: 2,
-          unique: true,
           trim: true,
           maxlength: [50, 'Name can not be more than 50 characters']
         },
@@ -56,10 +55,14 @@ UserSchema.virtual('joinedCommunities', {
 UserSchema.method('toJSON', function() {
   const user = this
   const userObject = user.toObject()
+  userObject.created_at = userObject.createdAt
+  userObject.id = userObject._id
 
   delete userObject.password
   delete userObject.tokens
+  delete userObject.createdAt
   delete userObject.updatedAt
+  delete userObject._id
   delete userObject.__v
 
   return userObject

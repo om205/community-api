@@ -27,9 +27,13 @@ const MemberSchema = new mongoose.Schema({
 MemberSchema.method('toJSON', function() {
     const member = this
     const memberObject = member.toObject()
-  
+    memberObject.id = memberObject._id
+    memberObject.created_at = memberObject.createdAt
+
+    delete memberObject._id
     delete memberObject.__v
-    delete memberObject.updated_at
+    delete memberObject.createdAt
+    delete memberObject.updatedAt
   
     return memberObject
 })

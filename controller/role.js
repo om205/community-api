@@ -1,31 +1,27 @@
 const Role = require('../model/Role')
-const { Snowflake } = require('@theinternetfolks/snowflake')
+const { roleCreater } = require('./helper/roleCreator')
 
 // @desc    Create a new Role
 // @route   POST /v1/role
 // @access  Private
 exports.createNewRole = async (req, res) => {
-    req.body._id = Snowflake.generate()
-    const role = new Role(req.body)
     try {
-        await role.save()
+        const role = await roleCreater(req.body)
         const jsonRes = {
             status: true,
             content: {
                 data: role
             }
         }
-        if(req.noResponse) return req.body._id
         res.status(201).send(jsonRes)
-    } catch (error) {
-        if(error.code === 11000 && req.noResponse) return        
+    } catch (error) {       
         res.status(400).send({status: false, error})
     }
 }
 
-// @desc    Get single Workplaces
-// @route   GET /api/v1/workplaces/:id
-// @access  Public
+// @desc    Get all created roles
+// @route   GET /v1/role
+// @access  Private
 exports.getAllRoles = async (req, res) => {
     const limit = parseInt(req.body.limit) || 10
     const page = parseInt(req.body.page) - 1 || 0
@@ -37,7 +33,7 @@ exports.getAllRoles = async (req, res) => {
             content: {
                 meta: {
                     total: count,
-                    pages: (count+9)/10,
+                    pages: Math.ceil(count/limit),
                     page: page+1
                 },
                 data: roles
